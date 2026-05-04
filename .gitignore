@@ -1,0 +1,129 @@
+# ---------------------------------------------------------------------------
+# Maven
+# ---------------------------------------------------------------------------
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+!.mvn/wrapper/maven-wrapper.properties
+
+# ---------------------------------------------------------------------------
+# Compiled Java
+# ---------------------------------------------------------------------------
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+hs_err_pid*
+replay_pid*
+
+# ---------------------------------------------------------------------------
+# IntelliJ IDEA
+# (project-level .idea/ is partially managed by .idea/.gitignore;
+#  the entries below cover machine-specific files outside it.)
+# ---------------------------------------------------------------------------
+*.iml
+*.iws
+*.ipr
+out/
+.idea_modules/
+
+# ---------------------------------------------------------------------------
+# Eclipse / STS
+# ---------------------------------------------------------------------------
+.classpath
+.project
+.settings/
+.springBeans
+.sts4-cache
+bin/
+.factorypath
+.apt_generated/
+.apt_generated_test/
+
+# ---------------------------------------------------------------------------
+# VS Code
+# ---------------------------------------------------------------------------
+.vscode/
+*.code-workspace
+
+# ---------------------------------------------------------------------------
+# NetBeans
+# ---------------------------------------------------------------------------
+nb-configuration.xml
+nbproject/private/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# ---------------------------------------------------------------------------
+# Spring Boot / Logs / Temp
+# ---------------------------------------------------------------------------
+*.log
+*.log.*
+logs/
+spring-shell.log
+*.pid
+*.tmp
+*.bak
+*.swp
+*~
+
+# ---------------------------------------------------------------------------
+# Secrets / local environment overrides
+# (do NOT commit credentials, JWT secrets, OAuth client secrets, ...)
+# ---------------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+application-local.yml
+application-local.yaml
+application-local.properties
+application-secret.yml
+application-secret.yaml
+application-secret.properties
+*.pem
+*.key
+*.p12
+*.jks
+*.keystore
+*.truststore
+
+# ---------------------------------------------------------------------------
+# Test reports / coverage
+# ---------------------------------------------------------------------------
+surefire-reports/
+failsafe-reports/
+*.exec
+.jacoco/
+jacoco.exec
+coverage/
+
+# ---------------------------------------------------------------------------
+# OS files
+# ---------------------------------------------------------------------------
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+# Linux
+*~
+.fuse_hidden*
+.Trash-*
