@@ -13,7 +13,7 @@
 
     <artifactId>auth-ldap</artifactId>
     <name>Auth LDAP</name>
-    <description>LDAP authentication adapter — TODO: implement in Phase 5</description>
+    <description>LDAP authentication adapter</description>
 
     <dependencies>
         <dependency>

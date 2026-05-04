@@ -13,7 +13,7 @@
 
     <artifactId>auth-oauth2</artifactId>
     <name>Auth OAuth2</name>
-    <description>OAuth2/OIDC support — TODO: implement in Phase 4</description>
+    <description>OAuth2/OIDC support</description>
 
     <dependencies>
         <dependency>
