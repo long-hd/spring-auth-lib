@@ -4,6 +4,7 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.time.Duration;
+import java.util.List;
 
 /**
  * Configuration properties for auth-lib.
@@ -14,6 +15,7 @@ import java.time.Duration;
 public class AuthProperties {
 
     private Jwt jwt = new Jwt();
+    private Security security = new Security();
 
     @Data
     public static class Jwt {
@@ -64,6 +66,46 @@ public class AuthProperties {
 
             /** Cookie path — restrict where browser sends cookie. Default: /auth/refresh. */
             private String cookiePath = "/auth/refresh";
+        }
+    }
+
+    /**
+     * Security config for default SecurityFilterChain.
+     * Only used when project does NOT define its own SecurityFilterChain bean.
+     */
+    @Data
+    public static class Security {
+
+        /**
+         * URL patterns to permit without authentication.
+         * Default includes common public paths.
+         */
+        private List<String> whiteList = List.of(
+                "/auth/**",
+                "/public/**",
+                "/swagger-ui/**",
+                "/v3/api-docs/**",
+                "/actuator/health"
+        );
+
+        private Cors cors = new Cors();
+
+        @Data
+        public static class Cors {
+            /** Allowed origin patterns. Default: localhost any port. */
+            private List<String> allowedOriginPatterns = List.of("http://localhost:*");
+
+            /** Allowed HTTP methods. */
+            private List<String> allowedMethods = List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS");
+
+            /** Allowed headers. */
+            private List<String> allowedHeaders = List.of("*");
+
+            /** Allow credentials (cookies). MUST be true for refresh token cookie. Default: true. */
+            private boolean allowCredentials = true;
+
+            /** Preflight cache duration in seconds. Default: 3600. */
+            private long maxAge = 3600;
         }
     }
 

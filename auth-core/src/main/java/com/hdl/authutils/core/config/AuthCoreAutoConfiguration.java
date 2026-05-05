@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
 
 /**
@@ -13,9 +14,14 @@ import org.springframework.core.env.Environment;
  * <p>
  * All beans use {@code @ConditionalOnMissingBean} so projects can override
  * any bean by defining their own.
+ * <p>
+ * Imports {@link DefaultSecurityFilterChainConfig} which provides a default
+ * SecurityFilterChain. If project defines its own SecurityFilterChain bean,
+ * the default is automatically skipped.
  */
 @AutoConfiguration
 @EnableConfigurationProperties(AuthProperties.class)
+@Import(DefaultSecurityFilterChainConfig.class)
 public class AuthCoreAutoConfiguration {
 
     @Bean
@@ -39,7 +45,6 @@ public class AuthCoreAutoConfiguration {
     @ConditionalOnMissingBean
     public TokenService tokenService(AuthProperties properties,
                                      RefreshTokenStore refreshTokenStore,
-                                     // Optional: TokenClaimsEnricher may not be provided
                                      org.springframework.beans.factory.ObjectProvider<TokenClaimsEnricher> enricherProvider) {
         return new DefaultTokenService(properties, refreshTokenStore, enricherProvider.getIfAvailable());
     }

@@ -5,6 +5,7 @@ import com.hdl.authutils.core.model.TokenRequest;
 import com.hdl.authutils.core.service.RefreshTokenCookieHelper;
 import com.hdl.authutils.core.service.TokenService;
 import com.hdl.authutils.oauth2.config.AuthOAuth2Properties;
+import com.hdl.authutils.oauth2.mapper.DefaultOidcUserInfoMapper;
 import com.hdl.authutils.oauth2.mapper.OAuth2UserInfoMapper;
 import com.hdl.authutils.oauth2.model.OAuth2UserInfo;
 import jakarta.servlet.ServletException;
@@ -137,7 +138,7 @@ public abstract class BaseOAuth2SuccessHandler extends SimpleUrlAuthenticationSu
     private OAuth2UserInfoMapper findMapper(String registrationId) {
         // Project-specific mappers first (non-default)
         for (OAuth2UserInfoMapper mapper : mappers) {
-            if (!(mapper instanceof com.hdl.authutils.oauth2.mapper.DefaultOidcUserInfoMapper)
+            if (!(mapper instanceof DefaultOidcUserInfoMapper)
                     && mapper.supports(registrationId)) {
                 return mapper;
             }
