@@ -45,7 +45,6 @@ public class InMemoryRefreshTokenStore implements RefreshTokenStore {
                     activeProfiles);
         }
 
-        // Cleanup expired tokens every 5 minutes
         scheduler.scheduleAtFixedRate(this::cleanup, 5, 5, TimeUnit.MINUTES);
     }
 
@@ -66,30 +65,14 @@ public class InMemoryRefreshTokenStore implements RefreshTokenStore {
 
     @Override
     public void revokeByToken(String tokenValue) {
-        store.computeIfPresent(tokenValue, (k, existing) ->
-                RefreshToken.builder()
-                        .tokenValue(existing.tokenValue())
-                        .userId(existing.userId())
-                        .familyId(existing.familyId())
-                        .expiresAt(existing.expiresAt())
-                        .createdAt(existing.createdAt())
-                        .revoked(true)
-                        .build()
-        );
+        store.computeIfPresent(tokenValue, (k, existing) -> withRevoked(existing));
     }
 
     @Override
     public void revokeAllByUserId(Long userId) {
         store.replaceAll((k, existing) -> {
             if (existing.userId().equals(userId) && !existing.revoked()) {
-                return RefreshToken.builder()
-                        .tokenValue(existing.tokenValue())
-                        .userId(existing.userId())
-                        .familyId(existing.familyId())
-                        .expiresAt(existing.expiresAt())
-                        .createdAt(existing.createdAt())
-                        .revoked(true)
-                        .build();
+                return withRevoked(existing);
             }
             return existing;
         });
@@ -100,14 +83,7 @@ public class InMemoryRefreshTokenStore implements RefreshTokenStore {
         if (familyId == null) return;
         store.replaceAll((k, existing) -> {
             if (familyId.equals(existing.familyId()) && !existing.revoked()) {
-                return RefreshToken.builder()
-                        .tokenValue(existing.tokenValue())
-                        .userId(existing.userId())
-                        .familyId(existing.familyId())
-                        .expiresAt(existing.expiresAt())
-                        .createdAt(existing.createdAt())
-                        .revoked(true)
-                        .build();
+                return withRevoked(existing);
             }
             return existing;
         });
@@ -121,8 +97,25 @@ public class InMemoryRefreshTokenStore implements RefreshTokenStore {
                 .toList();
     }
 
+    /**
+     * Create a revoked copy of a refresh token, preserving all fields.
+     */
+    private RefreshToken withRevoked(RefreshToken existing) {
+        return RefreshToken.builder()
+                .tokenValue(existing.tokenValue())
+                .userId(existing.userId())
+                .familyId(existing.familyId())
+                .expiresAt(existing.expiresAt())
+                .createdAt(existing.createdAt())
+                .revoked(true)
+                .username(existing.username())
+                .displayName(existing.displayName())
+                .roles(existing.roles())
+                .additionalClaims(existing.additionalClaims())
+                .build();
+    }
+
     private void cleanup() {
-        Instant now = Instant.now();
         int removed = 0;
         Iterator<Map.Entry<String, RefreshToken>> it = store.entrySet().iterator();
         while (it.hasNext()) {

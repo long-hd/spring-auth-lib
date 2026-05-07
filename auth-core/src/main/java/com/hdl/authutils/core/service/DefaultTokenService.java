@@ -132,15 +132,6 @@ public class DefaultTokenService implements TokenService {
         Instant accessExpiry = now.plus(jwtConfig.getAccessToken().getTtl());
         Instant refreshExpiry = now.plus(jwtConfig.getRefreshToken().getTtl());
 
-        // We need user info to generate new access token.
-        // For refresh, we re-encode from stored userId.
-        // The access token claims come from the ORIGINAL login — we don't re-query DB.
-        // This is by design: if user's roles changed, they need to re-login.
-        // However, we need at least userId to generate a minimal access token.
-        // The proper approach: encode essential claims in the refresh token's associated data.
-        // For now, generate a minimal JWT with just userId.
-        // Project can override this by providing a custom TokenService.
-
         String newRefreshTokenValue = UUID.randomUUID().toString();
 
         // Preserve family ID for FAMILY strategy
@@ -170,7 +161,8 @@ public class DefaultTokenService implements TokenService {
             revokeAllExcept(stored.userId(), newRefreshTokenValue);
         }
 
-        // Rebuild full access token from stored claims
+        // Rebuild full access token from claims stored in refresh token.
+        // Claims reflect the state at login time — if user's roles changed, they need to re-login.
         TokenRequest rebuiltRequest = TokenRequest.builder()
                 .userId(stored.userId())
                 .username(stored.username())
@@ -273,12 +265,8 @@ public class DefaultTokenService implements TokenService {
      * For ROTATE strategy: revoke all refresh tokens for a user except the given one.
      */
     private void revokeAllExcept(Long userId, String exceptTokenValue) {
-        // InMemoryStore doesn't have a "revoke all except" method,
-        // so we revoke all, then re-save the exception.
-        // For DB-backed stores, this would be a single UPDATE query.
         refreshTokenStore.findByToken(exceptTokenValue).ifPresent(keep -> {
             refreshTokenStore.revokeAllByUserId(userId);
-            // Re-save the one we want to keep (un-revoked)
             refreshTokenStore.save(keep);
         });
     }
