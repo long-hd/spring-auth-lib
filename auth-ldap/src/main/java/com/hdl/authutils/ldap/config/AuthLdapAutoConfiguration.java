@@ -10,6 +10,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.LdapContextSource;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Auto-configuration for auth-ldap module.
  * <p>
@@ -32,6 +35,14 @@ public class AuthLdapAutoConfiguration {
             contextSource.setUserDn(properties.getUsername());
             contextSource.setPassword(properties.getPassword());
         }
+
+        // Timeouts
+        Map<String, Object> environment = new HashMap<>();
+        environment.put("com.sun.jndi.ldap.connect.timeout",
+                String.valueOf(properties.getConnectTimeout()));
+        environment.put("com.sun.jndi.ldap.read.timeout",
+                String.valueOf(properties.getReadTimeout()));
+        contextSource.setBaseEnvironmentProperties(environment);
 
         contextSource.afterPropertiesSet();
         return contextSource;
