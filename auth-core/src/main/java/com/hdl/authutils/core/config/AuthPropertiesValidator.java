@@ -1,10 +1,5 @@
 package com.hdl.authutils.core.config;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
-
 import java.time.Duration;
 
 /**
@@ -12,17 +7,13 @@ import java.time.Duration;
  */
 class AuthPropertiesValidator {
 
-    private static final Logger log = LoggerFactory.getLogger(AuthPropertiesValidator.class);
     private static final int MIN_SECRET_KEY_LENGTH = 64;
 
-    private final AuthProperties properties;
-
     AuthPropertiesValidator(AuthProperties properties) {
-        this.properties = properties;
-        validate();
+        validate(properties);
     }
 
-    private void validate() {
+    private void validate(AuthProperties properties) {
         var jwt = properties.getJwt();
 
         // Secret key
@@ -64,10 +55,5 @@ class AuthPropertiesValidator {
             throw new IllegalStateException(
                     "auth.jwt.refresh-token.cookie-path must start with '/'");
         }
-    }
-
-    @EventListener(ApplicationReadyEvent.class)
-    void warnInMemoryStore() {
-        // Logging happens in InMemoryRefreshTokenStore itself
     }
 }

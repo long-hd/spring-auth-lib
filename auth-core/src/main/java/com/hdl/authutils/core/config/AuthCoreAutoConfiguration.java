@@ -8,6 +8,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
  * Auto-configuration for auth-core module.
@@ -68,5 +70,16 @@ public class AuthCoreAutoConfiguration {
             PermissionResolver permissionResolver,
             AuthProperties properties) {
         return new TokenAuthenticationFilter(tokenService, permissionResolver, properties);
+    }
+
+    /**
+     * Default PasswordEncoder using BCrypt (strength 10).
+     * Project can override by defining its own PasswordEncoder bean
+     * (e.g., Argon2, SCrypt, DelegatingPasswordEncoder).
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(10);
     }
 }
